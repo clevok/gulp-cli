@@ -1,0 +1,8 @@
+.age {
+    .name {
+        color:red;
+    }
+    &-name {
+        color: green;
+    }
+}
