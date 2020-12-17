@@ -15,7 +15,7 @@ const { watch } = require('gulp');
  */
 
 exports.watch = function (params, callback = () => {}) {
-    const getUrl = (url) => path.normalize(url).replace('\\', '/');
+    const getUrl = (url) => path.normalize(url).replace(/\\/g, '/');
     /**
      *
      * @param {string} url

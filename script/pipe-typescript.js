@@ -5,7 +5,7 @@ const gulp_plumber = require('gulp-plumber');
 
 /**
  * taskTypescript
- * @param {{entry: string|string[], out: string}} params - 来源
+ * @param {{entry: string|string[], out: string, params?: any}} params - 来源
  * @param {{[key: string]: any}} config - 配置
  */
 exports.pipeTypescript = function (
@@ -17,13 +17,18 @@ exports.pipeTypescript = function (
 ) {
     console.log('[更新]', params.entry);
     return gulp
-        .src(params.entry)
+        .src(params.entry, params.params || {})
         .pipe(gulp_plumber())
         .pipe(
             gulp_typescript({
                 ...config,
+                declaration: true,
+                removeComments: true,
+                emitDecoratorMetadata: true,
+                allowSyntheticDefaultImports: true,
+                incremental: true,
+
                 noImplicitAny: false,
-                // experimentalAsyncFunctions: true,
                 experimentalDecorators: true,
                 noEmitOnError: true,
                 allowJs: true,

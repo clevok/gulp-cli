@@ -7,12 +7,12 @@ sass.compiler = require('sass');
 
 /**
  * pipeSass
- * @param {{entry: string|string[], out: string}} params - 来源
+ * @param {{entry: string|string[], out: string, params?: any}} params - 来源
  */
 exports.pipeSass = function (params) {
     console.log('[更新]', params.entry);
     return gulp
-        .src(params.entry)
+        .src(params.entry, params.params || {})
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest(params.out));
 };

@@ -24,35 +24,13 @@ const Config = {
 };
 
 /**
- * @type {{[key: string]: (config: {entry: string|string[], out: string}) => () => any}}
+ * @type {{[key: string]: (config: {entry: string|string[], out: string, params?: any}) => () => any}}
  */
 const Rules = {
-    '.js': (params) => () =>
-        pipeTypescript(
-            {
-                entry: params.entry,
-                out: params.out,
-            },
-            Config.babel.ts,
-        ),
-    '.ts': (params) => () =>
-        pipeTypescript(
-            {
-                entry: params.entry,
-                out: params.out,
-            },
-            Config.babel.ts,
-        ),
-    '.scss': (params) => () =>
-        pipeSass({
-            entry: params.entry,
-            out: params.out,
-        }),
-    default: (params) => () =>
-        pipeOther({
-            entry: params.entry,
-            out: Config.out,
-        }),
+    '.js': (params) => () => pipeTypescript(params, Config.babel.ts),
+    '.ts': (params) => () => pipeTypescript(params, Config.babel.ts),
+    '.scss': (params) => () => pipeSass(params),
+    default: (params) => () => pipeOther(params),
 };
 
 function taskDefault() {
@@ -74,7 +52,9 @@ function taskDefault() {
             // 必须得先定义取全部, 然后在反选不要ts,js
             entry: [
                 `${Config.entry}/**/*`,
-                `!${Config.entry}/**/{*.ts|*.js|*.sass}`,
+                `!${Config.entry}/**/*.js`,
+                `!${Config.entry}/**/*.ts`,
+                `!${Config.entry}/**/*.scss`,
             ],
             out: Config.out,
         }),
@@ -82,6 +62,7 @@ function taskDefault() {
 }
 
 function taskWatch() {
+    console.log('[监听]')
     /**
      * @param {string} file - .js
      */
@@ -91,7 +72,6 @@ function taskWatch() {
         },
         (event) => {
             const rule = Rules[event.extname] || Rules['default'];
-
             switch (event.type) {
                 case 'add':
                 case 'change':
@@ -109,4 +89,4 @@ function taskWatch() {
 }
 
 exports.default = parallel(taskDefault());
-exports.watch = series(exports.default, taskWatch);
+exports.watch = taskWatch;

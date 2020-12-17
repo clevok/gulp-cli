@@ -4,7 +4,7 @@ const gulp_babel = require('gulp-babel');
 
 /**
  * taskJavascript
- * @param {{src: string|string[], out: string}} params - 来源
+ * @param {{src: string|string[], out: string, params?: any}} params - 来源
  * @param {{'preset-env': any}} config - 配置
  */
 exports.pipeJavascript = function (
@@ -20,7 +20,7 @@ exports.pipeJavascript = function (
     },
 ) {
     return gulp
-        .src(params.src)
+        .src(params.src, params.params || {})
         .pipe(
             gulp_babel({
                 presets: ['@babel/preset-env'],
